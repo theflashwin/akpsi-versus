@@ -11,6 +11,7 @@
         const res = await fetch(import.meta.env.VITE_FETCH_QUESTIONS_URL);
         const data = await res.json();
         questions = data.questions || data;
+        console.log(data)
       } catch (err) {
         console.error("Failed to fetch questions:", err);
       } finally {

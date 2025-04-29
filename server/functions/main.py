@@ -9,8 +9,18 @@ initialize_app()
 
 K = 24
 
+CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+}
+
 @https_fn.on_request()
 def fetch_question_and_players(req: https_fn.Request) -> https_fn.Response:
+
+    # 1) Always handle the preflight
+    if req.method == "OPTIONS":
+        return https_fn.Response("", status=204, headers=CORS_HEADERS)
 
     try:
         # fetch a random question
@@ -29,34 +39,18 @@ def fetch_question_and_players(req: https_fn.Request) -> https_fn.Response:
         return https_fn.Response(
             json_response,
             status=200,
-            headers={
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "*"
-            }
+            headers={**CORS_HEADERS, "Content-Type": "application/json"}
         )
     except Exception as e:
         error_response = json.dumps({"error": str(e)})
         return https_fn.Response(
             error_response,
             status=500,
-           headers={
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                "Access-Control-Allow-Headers": "*"
-            }
+            headers={**CORS_HEADERS, "Content-Type": "application/json"}
         )
     
 @https_fn.on_request()
 def post_result(req: https_fn.Request) -> https_fn.Response:
-
-    CORS_HEADERS = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-    }
 
     if req.method == "OPTIONS":
         return https_fn.Response(
@@ -120,6 +114,10 @@ def post_result(req: https_fn.Request) -> https_fn.Response:
     
 @https_fn.on_request()
 def fetch_questions(req: https_fn.Request) ->https_fn.Response:
+
+    # 1) Always handle the preflight
+    if req.method == "OPTIONS":
+        return https_fn.Response("", status=204, headers=CORS_HEADERS)
 
     try:
 
@@ -195,11 +193,6 @@ def fetch_question(req: https_fn.Request) -> https_fn.Response:
 @https_fn.on_request()
 def fetch_leaderboard(req: https_fn.Request) -> https_fn.Response:
 
-    CORS_HEADERS = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-    }
 
     if req.method == "OPTIONS":
         return https_fn.Response(
