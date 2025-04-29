@@ -11,7 +11,7 @@
 
   function handleImageError() {
     image = defaultImage;
-  }
+  } 
 </script>
 
 <div
